@@ -1,5 +1,6 @@
 import { PageServerLoad } from "@analogjs/router";
-import { parseCookies } from "h3";
+import { getCookie } from "h3";
+import { lucia } from "../../server/utils/auth";
 
 export const load = async ({
   params, // params/queryParams from the request
@@ -8,10 +9,11 @@ export const load = async ({
   fetch, // internal fetch for direct API calls,
   event, // full request event
 }: PageServerLoad) => {
-  const cookies = parseCookies(event);
-
-  // console.log(cookies);
+  const sessionId = getCookie(event, lucia.sessionCookieName) ?? "";
+  const { session, user } = await lucia.validateSession(sessionId);
   return {
-    loaded: true,
+    sessionId,
+    session,
+    user,
   };
 };

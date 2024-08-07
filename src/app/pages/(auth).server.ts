@@ -10,7 +10,7 @@ export const load = async ({
   event, // full request event
 }: PageServerLoad) => {
   const sessionId = getCookie(event, lucia.sessionCookieName) ?? null;
-  console.log(sessionId);
+  console.log(event.headers);
   return {
     loaded: true,
   };
