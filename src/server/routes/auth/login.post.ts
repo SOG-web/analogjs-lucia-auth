@@ -1,4 +1,9 @@
-import { createError, defineEventHandler, readFormData } from "h3";
+import {
+  createError,
+  defineEventHandler,
+  readFormData,
+  appendHeader,
+} from "h3";
 import { lucia } from "../../utils/auth";
 import {
   checkEmail,
@@ -53,4 +58,13 @@ export default defineEventHandler(async (event) => {
   }
 
   const session = await lucia.createSession(user.id, {});
+  appendHeader(
+    event,
+    "Set-Cookie",
+    lucia.createSessionCookie(session.id).serialize(),
+  );
+
+  return {
+    userId: user.id,
+  };
 });

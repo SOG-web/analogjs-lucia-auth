@@ -49,4 +49,12 @@ export default defineEventHandler(async (event) => {
     "Set-Cookie",
     lucia.createSessionCookie(session.id).serialize(),
   );
+
+  //@ts-ignore
+  delete newUser.password;
+
+  return {
+    userId: newUser.id,
+    user: newUser,
+  };
 });
