@@ -1,11 +1,12 @@
 import { Component } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
 import { RouterOutlet } from "@angular/router";
+import { AppService } from "./services/app.service";
 
 @Component({
   selector: "app-root",
   standalone: true,
   imports: [RouterOutlet],
+  providers: [AppService],
   template: ` <router-outlet></router-outlet> `,
   styles: [
     `

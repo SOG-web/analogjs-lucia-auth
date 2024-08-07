@@ -5,7 +5,9 @@ import { defineEventHandler, getHeader, getCookie, appendHeader } from "h3";
 import { lucia } from "../utils/auth";
 
 export default defineEventHandler(async (event) => {
+  console.log("auth middleware");
   if (event.node.req.method !== "GET") {
+    console.log("auth middleware not GET method");
     const originHeader = getHeader(event, "Origin") ?? null;
     const hostHeader = getHeader(event, "Host") ?? null;
     if (
@@ -17,8 +19,10 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  console.log(event.req.headers);
   const sessionId = getCookie(event, lucia.sessionCookieName) ?? null;
   if (!sessionId) {
+    console.log("auth middleware no session id");
     event.context.session = null;
     event.context.user = null;
     return;

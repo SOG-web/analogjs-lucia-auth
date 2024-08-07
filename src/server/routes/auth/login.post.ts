@@ -3,6 +3,7 @@ import {
   defineEventHandler,
   readFormData,
   appendHeader,
+  setCookie,
 } from "h3";
 import { lucia } from "../../utils/auth";
 import {
@@ -58,6 +59,11 @@ export default defineEventHandler(async (event) => {
   }
 
   const session = await lucia.createSession(user.id, {});
+  setCookie(
+    event,
+    lucia.sessionCookieName,
+    lucia.createSessionCookie(session.id).serialize(),
+  );
   appendHeader(
     event,
     "Set-Cookie",
