@@ -1,8 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal } from "@angular/core";
+import { RouterLink } from "@angular/router";
 
 @Component({
-  selector: 'app-home',
+  selector: "app-home",
   standalone: true,
+  imports: [RouterLink],
   template: `
     <div>
       <a href="https://analogjs.org/" target="_blank">
@@ -13,6 +15,9 @@ import { Component, signal } from '@angular/core';
     <h2>Analog</h2>
 
     <h3>The fullstack meta-framework for Angular!</h3>
+
+    <a class="card" routerLink="/admin">Go to Admin</a>
+    <a class="card" routerLink="/login">Go to LogIn</a>
 
     <div class="card">
       <button type="button" (click)="increment()">Count {{ count() }}</button>

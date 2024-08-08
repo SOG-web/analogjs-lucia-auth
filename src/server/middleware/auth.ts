@@ -12,59 +12,71 @@ import {
 import { lucia } from "../utils/auth";
 
 export default defineEventHandler(async (event) => {
-  // console.log("auth middleware");
+  const pathname = getRequestURL(event).pathname;
 
-  if (
-    !getRequestURL(event).pathname.startsWith("/api/v1") ||
-    !getRequestURL(event).pathname.includes("/admin")
-  ) {
-    return;
-  }
-
-  if (event.node.req.method !== "GET") {
-    console.log("auth middleware not GET method");
-    const originHeader = getHeader(event, "Origin") ?? null;
-    const hostHeader = getHeader(event, "Host") ?? null;
-    if (
-      !originHeader ||
-      !hostHeader ||
-      !verifyRequestOrigin(originHeader, [hostHeader])
-    ) {
-      return event.node.res.writeHead(403).end();
+  if (pathname.includes("_analog")) {
+    if (!pathname.includes("/admin")) {
+      console.log(getRequestURL(event).pathname);
+      console.log("auth middleware not admin");
+      return;
     }
   }
 
-  // console.log(event.req.headers);
-  const sessionId = getCookie(event, lucia.sessionCookieName) ?? null;
+  if (pathname.includes("/auth") && !pathname.includes("/auth/logout")) {
+    console.log(pathname);
+    console.log("auth middleware not api");
+    return;
+  }
+
+  let sessionId = getCookie(event, lucia.sessionCookieName) ?? null;
+
+  const authHeader = getHeader(event, "Authorization");
+
+  if (authHeader) {
+    const [type, token] = authHeader.split(" ");
+    if (type === "Bearer") {
+      sessionId = token;
+    }
+  }
+
   if (!sessionId) {
     console.log("auth middleware no session id");
+    // sendRedirect(event, "/login");
     event.context.session = null;
     event.context.user = null;
-    sendRedirect(event, "/login");
+    console.log(getRequestURL(event).pathname);
+    if (pathname.includes("/api")) {
+      return event.node.res.writeHead(403).end();
+    }
     return;
   }
 
   const { session, user } = await lucia.validateSession(sessionId);
 
   if (!session) {
-    // appendHeader(
-    //   event,
-    //   "Set-Cookie",
-    //   lucia.createBlankSessionCookie().serialize(),
-    // );
-    sendRedirect(event, "/login");
+    appendHeader(
+      event,
+      "Set-Cookie",
+      lucia.createBlankSessionCookie().serialize(),
+    );
+    console.log("auth middleware no session");
     event.context.session = null;
     event.context.user = null;
+    if (pathname.includes("/api")) {
+      return event.node.res.writeHead(403).end();
+    }
     return;
   }
 
   if (session && session.fresh) {
+    console.log("auth middleware session fresh");
     appendHeader(
       event,
       "Set-Cookie",
       lucia.createSessionCookie(session.id).serialize(),
     );
   }
+
   event.context.session = session;
   event.context.user = user;
 });
