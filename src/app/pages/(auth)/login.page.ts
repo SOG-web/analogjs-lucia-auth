@@ -1,6 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { HttpClient } from "@angular/common/http";
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import {
   FormControl,
   FormGroup,
@@ -8,7 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import { Router } from "@angular/router";
+import { AppService } from "../../services/app.service";
 
 @Component({
   standalone: true,
@@ -46,7 +45,7 @@ import { Router } from "@angular/router";
         Login
       </button>
     </form>`,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, Router, HttpClient],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
 })
 export default class LoginComponent {
   loginForm = new FormGroup({
@@ -54,26 +53,16 @@ export default class LoginComponent {
     password: new FormControl("", [Validators.required]),
   });
 
-  constructor(
-    private router: Router,
-    private http: HttpClient,
-  ) {}
+  appService = inject(AppService);
+
+  constructor() {}
 
   login() {
-    console.log(this.loginForm.value);
     if (this.loginForm.valid) {
-      const formData = new FormData();
-      formData.append("email", this.loginForm.value.email ?? "");
-      formData.append("password", this.loginForm.value.password ?? "");
-      console.log(formData);
-      this.http.post("/api/sigup", formData).subscribe({
-        next: (res) => {
-          console.log(res);
-        },
-        error: (err) => {
-          console.error(err);
-        },
-      });
+      this.appService.login(
+        this.loginForm.value.email ?? "",
+        this.loginForm.value.password ?? "",
+      );
     }
   }
 }

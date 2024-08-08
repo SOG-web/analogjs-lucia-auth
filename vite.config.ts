@@ -15,9 +15,9 @@ export default defineConfig(({ mode }) => ({
     analog({
       vite: {
         // Required to use the Analog SFC format
-        experimental: {
-          supportAnalogFormat: true,
-        },
+        // experimental: {
+        //   supportAnalogFormat: true,
+        // },
       },
       nitro: {
         runtimeConfig: {

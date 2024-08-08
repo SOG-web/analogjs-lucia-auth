@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
   if (!user) {
     throw createError({
       message: "Invalid email or password",
-      statusCode: 404,
+      statusCode: 400,
     });
   }
 
@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
   if (!passwordMatch) {
     throw createError({
       message: "Invalid email or password",
-      statusCode: 404,
+      statusCode: 400,
     });
   }
 
@@ -66,5 +66,6 @@ export default defineEventHandler(async (event) => {
 
   return {
     userId: user.id,
+    sessionId: session.id,
   };
 });
