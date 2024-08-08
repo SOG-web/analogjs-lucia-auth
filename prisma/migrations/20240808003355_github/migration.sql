@@ -10,4 +10,3 @@ ALTER TABLE "User"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_github_id_key" ON "User" ("github_id");
-
