@@ -18,12 +18,14 @@ export default defineEventHandler(async (event) => {
   const state = query["state"]?.toString() ?? null;
   const storedState = getCookie(event, "github_oauth_state") ?? null;
   if (!code || !state || !storedState || state !== storedState) {
+    console.log("Invalid state");
     throw createError({
       status: 400,
     });
   }
 
   try {
+    console.log("Validating code");
     const tokens = await github.validateAuthorizationCode(code);
     const githubUserResponse = await fetch("https://api.github.com/user", {
       headers: {
@@ -71,6 +73,7 @@ export default defineEventHandler(async (event) => {
     );
     return sendRedirect(event, "/");
   } catch (e) {
+    console.log(e);
     if (
       e instanceof OAuth2RequestError &&
       e.message === "bad_verification_code"
@@ -87,7 +90,7 @@ export default defineEventHandler(async (event) => {
 });
 
 interface GitHubUser {
-  id: string;
+  id: number;
   login: string;
   email: string;
 }

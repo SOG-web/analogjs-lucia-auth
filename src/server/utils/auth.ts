@@ -26,9 +26,13 @@ declare module "lucia" {
 }
 
 const config = {
-  githubClientId: process.env["GITHUB_CLIENT_ID"] || "",
-  githubClientSecret: process.env["GITHUB_CLIENT_SECRET"] || "",
+  githubClientId: process.env["GITHUB_CLIENT_ID"] || "Ov23li5st0w9qnfV3Muk",
+  githubClientSecret:
+    process.env["GITHUB_CLIENT_SECRET"] ||
+    "a3a992d33bf1888063a7e2baede3a4b83157cbe7",
 };
+
+// console.log(config);
 
 export const github = new GitHub(
   config.githubClientId,
