@@ -9,9 +9,11 @@ export const load = async ({
   fetch, // internal fetch for direct API calls,
   event, // full request event
 }: PageServerLoad) => {
-  const sessionId = getCookie(event, lucia.sessionCookieName) ?? null;
-  // console.log(event.headers);
+  const sessionId = getCookie(event, lucia.sessionCookieName) ?? "";
+  const { session, user } = await lucia.validateSession(sessionId);
   return {
-    loaded: true,
+    sessionId,
+    session,
+    user,
   };
 };

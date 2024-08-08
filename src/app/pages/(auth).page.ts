@@ -1,5 +1,18 @@
+import { RouteMeta } from "@analogjs/router";
 import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
+import { loginGuard } from "../guards/login.guard";
+
+export const routeMeta: RouteMeta = {
+  title: "Login Page",
+  // resolve: {
+  //   sessionData: async (route) => {
+  //     const data = await getLoadResolver(route);
+  //     return data;
+  //   },
+  // },
+  canActivate: [loginGuard],
+};
 
 @Component({
   standalone: true,
