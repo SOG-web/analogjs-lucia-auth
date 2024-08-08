@@ -6,6 +6,7 @@
     "node": ">=18.19.1"
   },
   "scripts": {
+    "postinstall": "npx prisma generate",
     "ng": "ng",
     "dev": "ng serve",
     "start": "npm run dev",
